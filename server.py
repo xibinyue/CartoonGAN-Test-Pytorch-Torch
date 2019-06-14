@@ -64,7 +64,7 @@ class CartoonChange(object):
             print oss_path
             download_one_img(oss_path, dst_path)
             cartoon_dst_path = self.change_to_cartoon(dst_path, cartoon_out_dir)
-            urls.append(cartoon_dst_path)
+            urls.append(os.path.join(os.getcwd(),cartoon_dst_path))
         return urls
 
     def change_to_cartoon(self, img_url, dst_dir):
