@@ -15,6 +15,7 @@ from tomorrow import threads
 import time
 from sqlalchemy import create_engine
 import pandas as pd
+import cv2
 
 sns_engine = create_engine('mysql+mysqldb://snsro1:CpuHli03@192.168.10.18:3337/snsforum?charset=utf8')
 
@@ -22,6 +23,9 @@ valid_ext = ['.jpg', '.png']
 base_dir = 'http://oss4liview.moji.com'
 local_dir = 'sns_imgs'
 cartoon_out_dir = 'cartoon_out'
+
+size1 = (505, 320)
+size2 = (168, 106)
 
 
 def init_model():
@@ -33,6 +37,14 @@ def init_model():
 
 
 cartoon_model = init_model()
+
+
+def resize_image(src_path, size, size_index):
+    img = cv2.imread(src_path)
+    img_resize = cv2.resize(img, size)
+    dst_path = src_path.split('.')[0] + '_%d.jpg' % size_index
+    cv2.imwrite(img_resize, dst_path)
+    return dst_path
 
 
 # @threads(20)
@@ -64,8 +76,16 @@ class CartoonChange(object):
             print oss_path
             download_one_img(oss_path, dst_path)
             cartoon_dst_path = self.change_to_cartoon(dst_path, cartoon_out_dir)
-            urls.append(os.path.join(os.getcwd(),cartoon_dst_path))
-        return urls
+            urls.append(os.path.join(os.getcwd(), cartoon_dst_path))
+
+        small = []
+        big = []
+        for url in urls:
+            big_path = resize_image(url, size1, 'big')
+            small_path = resize_image(url, size2, 'small')
+            small.append(small_path)
+            big.append(big_path)
+        return {'small': small, 'big': big}
 
     def change_to_cartoon(self, img_url, dst_dir):
         input_image = Image.open(img_url).convert("RGB")
