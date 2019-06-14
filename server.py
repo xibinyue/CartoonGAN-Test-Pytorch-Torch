@@ -48,22 +48,21 @@ def download_one_img(url, img_path):
     return False
 
 
-def get_img_urls():
-    stamp_start = int(time.time()) - 10 * 60 * 1000
-    sql = "SELECT * FROM picture_base WHERE sns_id=56587715  AND upload_time > '%d'ORDER BY upload_time DESC limit 3" % stamp_start
-    res = pd.read_sql(sql, sns_engine)
-    res['oss_path'] = res['path'].map(lambda x: os.path.join(base_dir, x))
-    for i in range(len(res)):
-        oss_path = res['oss_path'].iloc[i]
-        dst_path = os.path.join(local_dir, oss_path.split('/')[-1])
-        print oss_path
-        download_one_img(oss_path, dst_path)
-        # cartoon.change_to_cartoon(dst_path, cartoon_out_dir)
-
-
 class CartoonChange(object):
     def __init__(self, model_def=cartoon_model):
         self.model = model_def
+
+    def get_img_urls(self):
+        stamp_start = int(time.time()) - 10 * 60 * 1000
+        sql = "SELECT * FROM picture_base WHERE sns_id=56587715  AND upload_time > '%d'ORDER BY upload_time DESC limit 3" % stamp_start
+        res = pd.read_sql(sql, sns_engine)
+        res['oss_path'] = res['path'].map(lambda x: os.path.join(base_dir, x))
+        for i in range(len(res)):
+            oss_path = res['oss_path'].iloc[i]
+            dst_path = os.path.join(local_dir, oss_path.split('/')[-1])
+            print oss_path
+            download_one_img(oss_path, dst_path)
+            self.change_to_cartoon(dst_path, cartoon_out_dir)
 
     def change_to_cartoon(self, img_url, dst_dir):
         input_image = Image.open(img_url).convert("RGB")
@@ -105,4 +104,6 @@ def main():
 
 if __name__ == '__main__':
     # main()
-    get_img_urls()
+    # get_img_urls()
+    cartoon = CartoonChange()
+    cartoon.get_img_urls()
