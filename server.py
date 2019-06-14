@@ -42,7 +42,7 @@ cartoon_model = init_model()
 def resize_image(src_path, size, size_index):
     img = cv2.imread(src_path)
     img_resize = cv2.resize(img, size)
-    dst_path = src_path.split('.')[0] + '_%d.jpg' % size_index
+    dst_path = src_path.split('.')[0] + '_%s.jpg' % size_index
     cv2.imwrite(img_resize, dst_path)
     return dst_path
 
