@@ -4,14 +4,12 @@
 import torch
 import os
 import numpy as np
-import argparse
 from PIL import Image
 import torchvision.transforms as transforms
 from torch.autograd import Variable
 import torchvision.utils as vutils
 from network.Transformer import Transformer
 import zerorpc
-from log_utils import MyLogger
 
 valid_ext = ['.jpg', '.png']
 
