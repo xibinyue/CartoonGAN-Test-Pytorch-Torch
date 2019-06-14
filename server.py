@@ -109,4 +109,4 @@ if __name__ == '__main__':
     # main()
     # get_img_urls()
     cartoon = CartoonChange()
-    cartoon.get_img_urls()
+    print cartoon.get_img_urls()
