@@ -35,7 +35,7 @@ def init_model():
 cartoon_model = init_model()
 
 
-@threads(20)
+# @threads(20)
 def download_one_img(url, img_path):
     try:
         binary_data = requests.get(url)
@@ -106,7 +106,7 @@ def main():
 
 
 if __name__ == '__main__':
-    # main()
-    # get_img_urls()
-    cartoon = CartoonChange()
-    print cartoon.get_img_urls()
+    main()
+    # # get_img_urls()
+    # cartoon = CartoonChange()
+    # print cartoon.get_img_urls()
