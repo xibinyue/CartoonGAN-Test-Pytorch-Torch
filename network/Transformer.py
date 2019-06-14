@@ -2,9 +2,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class Transformer(nn.Module):
     def __init__(self):
         super(Transformer, self).__init__()
+        self.__name__ = 'Cartoon-Model'
         #
         self.refpad01_1 = nn.ReflectionPad2d(3)
         self.conv01_1 = nn.Conv2d(3, 64, 7)
@@ -15,8 +17,8 @@ class Transformer(nn.Module):
         self.in02_1 = InstanceNormalization(128)
         # relu
         self.conv03_1 = nn.Conv2d(128, 256, 3, 2, 1)
-        self.conv03_2 = nn.Conv2d(256, 256, 3, 1, 1)   
-        self.in03_1 = InstanceNormalization(256)    
+        self.conv03_2 = nn.Conv2d(256, 256, 3, 1, 1)
+        self.in03_1 = InstanceNormalization(256)
         # relu
 
         ## res block 1
