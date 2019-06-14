@@ -10,8 +10,18 @@ from torch.autograd import Variable
 import torchvision.utils as vutils
 from network.Transformer import Transformer
 import zerorpc
+import requests
+from tomorrow import threads
+import time
+from sqlalchemy import create_engine
+import pandas as pd
+
+sns_engine = create_engine('mysql+mysqldb://snsro1:CpuHli03@192.168.10.18:3337/snsforum?charset=utf8')
 
 valid_ext = ['.jpg', '.png']
+base_dir = 'http://oss4liview.moji.com'
+local_dir = 'sns_imgs'
+cartoon_out_dir = 'cartoon_out'
 
 
 def init_model():
@@ -23,6 +33,32 @@ def init_model():
 
 
 cartoon_model = init_model()
+
+
+@threads(20)
+def download_one_img(url, img_path):
+    try:
+        binary_data = requests.get(url)
+        temp_file = open(img_path, 'wb')
+        temp_file.write(binary_data.content)
+        temp_file.close()
+        return True
+    except Exception as e:
+        print 'image download error: %s[%s][%s]' % (e, url, img_path)
+    return False
+
+
+def get_img_urls():
+    stamp_start = int(time.time()) - 10 * 60 * 1000
+    sql = "SELECT * FROM picture_base WHERE sns_id=56587715  AND upload_time > '%d'ORDER BY upload_time DESC limit 3" % stamp_start
+    res = pd.read_sql(sql, sns_engine)
+    res['oss_path'] = res['path'].map(lambda x: os.path.join(base_dir, x))
+    for i in range(len(res)):
+        oss_path = res['oss_path'].iloc[i]
+        dst_path = os.path.join(local_dir, oss_path.split('/')[-1])
+        print oss_path
+        download_one_img(oss_path, dst_path)
+        # cartoon.change_to_cartoon(dst_path, cartoon_out_dir)
 
 
 class CartoonChange(object):
@@ -68,4 +104,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    get_img_urls()
