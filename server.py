@@ -24,8 +24,8 @@ base_dir = 'http://oss4liview.moji.com'
 local_dir = 'sns_imgs'
 cartoon_out_dir = 'cartoon_out'
 
-size1 = (505, 320)
-size2 = (168, 106)
+size1 = (320, 505)
+size2 = (160, 252)
 
 
 def init_model():
